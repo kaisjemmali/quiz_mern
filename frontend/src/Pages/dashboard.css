@@ -1,0 +1,32 @@
+/* dashboard.css */
+
+/* Appliquer une mise en page de colonnes lorsque l'écran est suffisamment large */
+@media screen and (min-width: 768px) {
+  .admin-dashboard {
+    display: flex;
+  }
+
+  .sidebar {
+    flex: 0 0 30%;
+    max-width: 30%;
+  }
+
+  .main-content {
+    flex: 1;
+    max-width: 70%;
+    margin-left: 20px;
+  }
+}
+
+/* Appliquer une mise en page de lignes lorsque l'écran est étroit */
+@media screen and (max-width: 767px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .main-content {
+    max-width: 100%;
+    margin-left: 0;
+  }
+}
