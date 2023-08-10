@@ -145,12 +145,6 @@ pour déclencher le re-render du composant CategoryList.
                     objectFit: "cover",
                   }}
                 />
-                {/* <a>
-                  <div
-                    className="mask"
-                    style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                  ></div>
-                </a> */}
                 <div
                   className="mask"
                   style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}

@@ -40,6 +40,7 @@ export const deleteQuizQuestion = createAsyncThunk(
       const { data } = await axios.delete(
         `http://localhost:5000/api/quiz-questions/${payload}`
       );
+      // window.location.reload();
       return data;
     } catch (error) {
       throw error.response.data;
@@ -84,6 +85,7 @@ const quizQuestionSlice = createSlice({
     data: [],
     loading: false,
     error: null,
+    questions: [],
   },
   reducers: {},
   extraReducers: (builder) => {

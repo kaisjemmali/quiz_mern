@@ -10,8 +10,22 @@ import {
   MDBTableHead,
   MDBTableBody,
   MDBBtn,
+  MDBModal,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBRow,
+  MDBCol,
+  MDBInput,
 } from "mdb-react-ui-kit";
-import { fetchCategoryQuestions } from "../Redux/quizQuestionSlice";
+import {
+  fetchCategoryQuestions,
+  deleteQuizQuestion,
+  updateQuizQuestion,
+} from "../Redux/quizQuestionSlice";
 import { fetchCategories } from "../Redux/categorySlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,10 +37,6 @@ const CategoryQuestions = () => {
     loading,
     error,
   } = useSelector((state) => state.categories);
-  // Utilisation de useEffect pour charger les catégories dès que le composant est monté
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
 
   ////////////////////Configuration MDB pour Tabs/////////////////
   const [activeCategoryId, setActiveCategoryId] = useState(null);
@@ -40,7 +50,116 @@ const CategoryQuestions = () => {
     await dispatch(fetchCategoryQuestions(categoryId)); // Pour récupérer les questions de chaque catégorie
   };
   // Pour récupérer les questions de chaque catégorie
-  const { questions } = useSelector((state) => state.quizQuestions);
+  const { questions, deletedQuestion } = useSelector(
+    (state) => state.quizQuestions
+  );
+
+  /////////////////////Logique Modal && Edit Question //////////////////////////////
+
+  const [basicModal, setBasicModal] = useState(false);
+
+  // État local pour suivre l'ID de la question en cours d'édition et les nouvelles valeurs
+  const [editingQuestion, setEditingQuestion] = useState(null);
+  const [editCategory, setEditCategory] = useState("");
+  const [editQuestion, setEditQuestion] = useState("");
+  const [editOptions, setEditOptions] = useState([]);
+  console.log(editOptions);
+
+  const handleEdit = (quizQuestion) => {
+    setBasicModal(!basicModal);
+    ////// Mettre à jour l'état local avec les valeurs actuelles de la catégorie en cours d'édition//////
+
+    // État pour suivre l'ID de la question en cours d'édition
+    setEditingQuestion(quizQuestion._id);
+    setEditQuestion(quizQuestion.question);
+    setEditOptions(quizQuestion.options);
+  };
+
+  // Gestionnaire de sauvegarde des modifications
+
+  const handleSave = () => {
+    if (window.confirm("Voulez-vous sauvegarder les modifications ?")) {
+      // Envoyer une requête pour mettre à jour la question avec les nouvelles valeurs
+      dispatch(
+        updateQuizQuestion({
+          id: editingQuestion,
+          category: editCategory,
+          question: editQuestion,
+          options: editOptions,
+        })
+      ).then(() => {
+        // Rechargez les questions pour la catégorie active
+        dispatch(fetchCategoryQuestions(activeCategoryId));
+        // Réinitialisez l'état local d'édition
+        setEditingQuestion(null);
+        setEditCategory("");
+        setEditQuestion("");
+        setEditQuestion([]);
+        setBasicModal(false); // Fermez le modal après avoir sauvegardé
+      });
+    }
+  };
+
+  // Gestionnaire d'annulation de l'édition
+
+  const handleCancel = () => {
+    // Annulez l'édition et réinitialisez l'état local d'édition
+    setEditingQuestion(null);
+    setEditCategory("");
+    setEditQuestion("");
+    setEditQuestion([]);
+    setBasicModal(false); // Fermez le modal après avoir sauvegardé
+  };
+
+  // isCorrect Logique
+
+  const handleCorrectOptionChange = (index) => {
+    const updatedOptions = editOptions.map((option, i) => {
+      if (i === index) {
+        return { ...option, isCorrect: true };
+      } else {
+        return { ...option, isCorrect: false };
+      }
+    });
+    setEditOptions(updatedOptions);
+  };
+
+  // Ajouter une option avec un bouton
+
+  const handleAddOption = () => {
+    setEditOptions([...editOptions, { text: "", isCorrect: false }]);
+  };
+
+  // Supprimer une option avec un bouton
+
+  const handleDeleteLastOption = () => {
+    if (editOptions.length > 0) {
+      const updatedOptions = [...editOptions];
+      updatedOptions.pop(); // Supprime la dernière option
+      setEditOptions(updatedOptions);
+    }
+  };
+
+  //////////////Fin de la partie Edit//////////////////////////////////////////////////////////////
+
+  // Utilisation de useEffect pour charger les catégories dès que le composant est monté
+  useEffect(() => {
+    dispatch(fetchCategories());
+    // dispatch(fetchCategoryQuestions());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (deletedQuestion) {
+      // Si une question a été supprimée, rechargez les questions
+      dispatch(fetchCategoryQuestions(activeCategoryId)); // récupérer à nouveau les questions pour la catégorie active.
+    }
+  }, [dispatch, deletedQuestion, activeCategoryId]); // useEffect sera déclenché chaque fois que l'une de ces valeurs change
+
+  const handleDelete = async (questionId) => {
+    if (window.confirm("Voulez-vous vraiment supprimer cette question ?")) {
+      await dispatch(deleteQuizQuestion(questionId));
+    }
+  };
 
   //////////////////////Rendering Loading and Error//////////////////////////////
   if (loading) {
@@ -76,20 +195,6 @@ const CategoryQuestions = () => {
           </MDBTabsItem>
         ))}
       </MDBTabs>
-
-      {/* <MDBTabsContent>
-        {categories.map((category) => (
-          <MDBTabsPane
-            key={category._id}
-            show={activeCategoryId === category._id}
-          >
-            {questions?.map((question) => (
-              <div key={question._id}>{question.question}</div>
-            ))}
-          </MDBTabsPane>
-        ))}
-      </MDBTabsContent> */}
-
       <MDBTabsContent>
         {categories.map((category) => (
           <MDBTabsPane
@@ -101,7 +206,7 @@ const CategoryQuestions = () => {
                 <tr>
                   <th>#</th>
                   <th>Questions</th>
-                  <th>Update</th>
+                  <th>Edit</th>
                   <th>Delete</th>
                 </tr>
               </MDBTableHead>
@@ -111,12 +216,20 @@ const CategoryQuestions = () => {
                     <td>{index + 1}</td>
                     <td>{question.question}</td>
                     <td>
-                      <MDBBtn color="primary" size="sm">
-                        Update
+                      <MDBBtn
+                        color="primary"
+                        size="sm"
+                        onClick={() => handleEdit(question)}
+                      >
+                        Edit
                       </MDBBtn>
                     </td>
                     <td>
-                      <MDBBtn color="danger" size="sm">
+                      <MDBBtn
+                        color="danger"
+                        size="sm"
+                        onClick={() => handleDelete(question._id)}
+                      >
                         Delete
                       </MDBBtn>
                     </td>
@@ -127,6 +240,140 @@ const CategoryQuestions = () => {
           </MDBTabsPane>
         ))}
       </MDBTabsContent>
+      {/* Code du Modal MDB */}
+      <MDBModal show={basicModal} setShow={setBasicModal} tabIndex="-1">
+        <MDBModalDialog>
+          <MDBModalContent left>
+            <MDBModalHeader>
+              <MDBModalTitle>Edit Question</MDBModalTitle>
+              <MDBBtn
+                className="btn-close"
+                color="none"
+                onClick={handleCancel}
+              ></MDBBtn>
+            </MDBModalHeader>
+            <MDBModalBody>
+              {/* ///////////////////Modal Content to Edit : Start////////////////// */}
+              <MDBRow className="mb-3">
+                <MDBCol>
+                  <label htmlFor="category" className="form-label fw-bold mb-2">
+                    Select Category
+                  </label>
+                  <select
+                    className="form-select"
+                    onChange={(e) => setEditCategory(e.target.value)}
+                  >
+                    <option value={editCategory}>Choose Category ...</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </MDBCol>
+              </MDBRow>
+              <label htmlFor="question" className="form-label fw-bold mb-3">
+                Edit the Question
+              </label>
+              <MDBInput
+                value={editQuestion}
+                onChange={(e) => setEditQuestion(e.target.value)}
+                className="mb-3"
+              />
+
+              {/* ///////////////////////Options///////////////////////////////////////////////////////////////////// */}
+              <label htmlFor="options" className="form-label fw-bold mb-3">
+                Edit Options :
+              </label>
+              {editOptions?.map((option, index) => (
+                <div key={index}>
+                  <label htmlFor="options" className="form-label fw-bold mb-3">
+                    {`Option ${index + 1}`}
+                  </label>
+                  <MDBInput
+                    type="text"
+                    defaultValue={option.text}
+                    onChange={(e) => {
+                      const updatedText = e.target.value;
+                      const updatedOptions = editOptions.map(
+                        (opt, i) =>
+                          i === index ? { ...opt, text: updatedText } : opt
+                        // la valeur de retour doit ête un array
+                        // onchange = {(e) => setEditOptions(e.target.value)}
+                        // ne peut pas fonctionner car editOptions
+                        // est un array, et setEditOptions qu'on veut retourner
+                        // est une valeur simple et non pas un array
+                      );
+                      setEditOptions(updatedOptions);
+                    }}
+                    style={{ margin: "4px 0" }}
+                  />
+                  <div
+                    className="d-flex align-items-center"
+                    style={{ justifyContent: "space-around" }}
+                  >
+                    <div>
+                      <input
+                        type="radio"
+                        id={`option${index}_correct`}
+                        name={`correct_option_${index}`}
+                        checked={option.isCorrect}
+                        style={{ marginRight: "5px" }}
+                        onChange={() => handleCorrectOptionChange(index)}
+                      />
+                      <label htmlFor={`option${index}_correct`}>
+                        Correct Option
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        id={`option${index}_incorrect`}
+                        name={`correct_option_${index}`}
+                        checked={!option.isCorrect}
+                        style={{ marginRight: "5px" }}
+                        onChange={() => handleCorrectOptionChange(index)}
+                      />
+                      <label htmlFor={`option${index}_incorrect`}>
+                        Incorrect Option
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* ******* Ajouter un bouton pour ajouter une option supplémentaire */}
+
+              <div className="d-grid gap-2 mt-3">
+                <MDBBtn type="button" color="info" onClick={handleAddOption}>
+                  Add Option
+                </MDBBtn>
+              </div>
+
+              {/* Bouton pour supprimer la dernière option */}
+              <div className="d-grid gap-2 mt-3">
+                <MDBBtn
+                  type="button"
+                  color="danger"
+                  onClick={handleDeleteLastOption}
+                  disabled={editOptions.length === 0}
+                >
+                  Delete Option
+                </MDBBtn>
+              </div>
+
+              {/* ///////////////////Modal Content to Edit : End////////////////// */}
+            </MDBModalBody>
+
+            <MDBModalFooter>
+              <MDBBtn color="secondary" onClick={handleCancel}>
+                Close
+              </MDBBtn>
+              <MDBBtn onClick={handleSave}>Save changes</MDBBtn>
+            </MDBModalFooter>
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
     </div>
   );
 };

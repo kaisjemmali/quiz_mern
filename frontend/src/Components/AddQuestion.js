@@ -24,6 +24,14 @@ export default function AddQuestion() {
     setOptions([...options, { text: "", isCorrect: false }]);
   };
 
+  const handleDeleteLastOption = () => {
+    if (options.length > 0) {
+      const updatedOptions = [...options];
+      updatedOptions.pop(); // Supprime la dernière option
+      setOptions(updatedOptions);
+    }
+  };
+
   const handleOptionChange = (index, field, value) => {
     const updatedOptions = [...options];
     updatedOptions[index][field] = value;
@@ -153,6 +161,17 @@ export default function AddQuestion() {
       <div className="d-grid gap-2 mt-3">
         <MDBBtn type="button" color="info" onClick={handleAddOption}>
           Add Option
+        </MDBBtn>
+      </div>
+      {/* Bouton pour supprimer la dernière option */}
+      <div className="d-grid gap-2 mt-3">
+        <MDBBtn
+          type="button"
+          color="danger"
+          onClick={handleDeleteLastOption}
+          disabled={options.length === 0}
+        >
+          Delete Option
         </MDBBtn>
       </div>
 
