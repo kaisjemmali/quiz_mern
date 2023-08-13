@@ -20,5 +20,9 @@ const authSlice = createSlice({
   },
 });
 
+// ////////////Récupérer l'ID////////////////
+export const selectUserId = (state) =>
+  state.auth.userInfo ? state.auth.userInfo._id : null;
+
 export const { setCredentials, Logout } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,5 +1,8 @@
+/***********************Fonctionnel****************************/
+
 import React, { useState } from "react";
 import Sidebar from "../Components/Sidebar/Sidebar";
+import PlayQuiz from "../Components/PlayQuiz"; // Import the PlayQuiz Categories
 import ProfilePage from "./ProfilePage";
 import "./dashboard.css";
 
@@ -7,16 +10,26 @@ import "./dashboard.css";
 
 const UserDashboard = () => {
   const [showProfile, setShowProfile] = useState(false);
+  const [showCategoryPlay, setShowCategoryPlay] = useState(false);
 
   const toggleProfile = () => {
     setShowProfile((prevShowProfile) => !prevShowProfile);
+    setShowCategoryPlay(false);
+  };
+
+  const toogleCategoryPlay = () => {
+    setShowCategoryPlay((prevShowCategoryPlay) => !prevShowCategoryPlay);
+    setShowProfile(false);
   };
 
   return (
     <div style={{ display: "flex" }}>
       {/* Sidebar */}
       <div style={{ flex: "0 0 30%", maxWidth: "30%" }}>
-        <Sidebar toggleProfile={toggleProfile} />
+        <Sidebar
+          toggleProfile={toggleProfile}
+          toogleCategoryPlay={toogleCategoryPlay}
+        />
       </div>
 
       {/* Main Content */}
@@ -32,6 +45,7 @@ const UserDashboard = () => {
         >
           {showProfile && <ProfilePage />}
           {/* Add other content based on selectedItem */}
+          {showCategoryPlay && <PlayQuiz />}
         </div>
       </div>
     </div>

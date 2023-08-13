@@ -63,13 +63,23 @@ const CategoryQuestions = () => {
   const [editCategory, setEditCategory] = useState("");
   const [editQuestion, setEditQuestion] = useState("");
   const [editOptions, setEditOptions] = useState([]);
-  console.log(editOptions);
+
+  // Réinitialisation de l'état d'édition lorsque la modal est fermée
+  useEffect(() => {
+    if (!basicModal) {
+      setEditingQuestion(null);
+      setEditCategory("");
+      setEditQuestion("");
+      setEditOptions([]);
+    }
+  }, [basicModal]);
 
   const handleEdit = (quizQuestion) => {
     setBasicModal(!basicModal);
     ////// Mettre à jour l'état local avec les valeurs actuelles de la catégorie en cours d'édition//////
 
     // État pour suivre l'ID de la question en cours d'édition
+    setEditCategory(quizQuestion.category); // Mettre à jour la catégorie actuelle
     setEditingQuestion(quizQuestion._id);
     setEditQuestion(quizQuestion.question);
     setEditOptions(quizQuestion.options);
@@ -94,7 +104,7 @@ const CategoryQuestions = () => {
         setEditingQuestion(null);
         setEditCategory("");
         setEditQuestion("");
-        setEditQuestion([]);
+        setEditOptions([]);
         setBasicModal(false); // Fermez le modal après avoir sauvegardé
       });
     }
@@ -117,8 +127,11 @@ const CategoryQuestions = () => {
     const updatedOptions = editOptions.map((option, i) => {
       if (i === index) {
         return { ...option, isCorrect: true };
-      } else {
+      } else if (option.isCorrect) {
+        // Ajouter cette condition pour réinitialiser l'option précédente correcte
         return { ...option, isCorrect: false };
+      } else {
+        return option;
       }
     });
     setEditOptions(updatedOptions);
@@ -262,8 +275,9 @@ const CategoryQuestions = () => {
                   <select
                     className="form-select"
                     onChange={(e) => setEditCategory(e.target.value)}
+                    value={editCategory} // Définir la valeur du champ sur editCategory
                   >
-                    <option value={editCategory}>Choose Category ...</option>
+                    <option value="">Choose Category ...</option>
                     {categories.map((cat) => (
                       <option key={cat._id} value={cat._id}>
                         {cat.name}

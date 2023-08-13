@@ -3,6 +3,7 @@ import userReducer from "./userSlice";
 import authReducer from "./authSlice";
 import categoryReducer from "./categorySlice";
 import quizQuestionReducer from "./quizQuestionSlice";
+import quizResultSlice from "./quizResultSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     auth: authReducer,
     categories: categoryReducer,
     quizQuestions: quizQuestionReducer,
+    quizResult: quizResultSlice,
   },
   devTools: true,
 });

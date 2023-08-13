@@ -1,3 +1,5 @@
+/*******************************Fonctionnel****************************/
+
 import React from "react";
 import "./Sidebar.css";
 
@@ -17,10 +19,9 @@ export default function App({
   toggleCategories,
   toggleUsers,
   toggleAddQuestion,
-  togglePlayQuiz,
   toggleCategoryQuestions,
+  toogleCategoryPlay,
 }) {
-  // const [showShow, setShowShow] = useState(false);
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -141,7 +142,7 @@ export default function App({
                   href="#"
                   action
                   className="border-0 border-bottom rounded"
-                  onClick={togglePlayQuiz}
+                  onClick={toogleCategoryPlay} // Utilisation de la fonction toogleCategoryPlay
                 >
                   <MDBIcon fas icon="fas fa-gamepad me-3" />
                   Play Quiz
@@ -210,3 +211,5 @@ export default function App({
     </>
   );
 }
+
+/**********************************Code à tester avec le container******************************/
