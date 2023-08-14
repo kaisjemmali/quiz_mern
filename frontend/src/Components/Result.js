@@ -324,8 +324,9 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchQuizResults } from "../Redux/quizResultSlice";
 import { selectUserId } from "../Redux/authSlice"; // Import the selectUserId selector
+import { MDBBtn, MDBIcon } from "mdb-react-ui-kit";
 
-const Result = ({ userResponses, questions }) => {
+const Result = ({ userResponses, questions, toogleQuizRePlay }) => {
   const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
 
@@ -341,31 +342,117 @@ const Result = ({ userResponses, questions }) => {
 
   return (
     <div>
-      <h2>Résultat du quiz :</h2>
-      {questions.map((question, index) => {
-        const userResponse = userResponses[index];
-        const selectedAnswerIndex = userResponse.selectedAnswerIndex;
-        const isCorrect = userResponse.isCorrect;
-        const correctAnswerIndex = question.options.findIndex(
-          (option) => option.isCorrect
-        );
-        const correctAnswerText = question.options[correctAnswerIndex].text;
+      <div
+        style={{
+          marginBottom: "50px",
+          textAlign: "center",
+          marginTop: "20px",
+        }}
+      >
+        <h2>Quiz Result</h2>
+      </div>
 
-        return (
-          <div key={index}>
-            <h3>Question : {question.question}</h3>
-            <p>
-              Votre réponse :{" "}
-              {selectedAnswerIndex !== null
-                ? question.options[selectedAnswerIndex].text
-                : "Vous n'avez pas répondu à cette question"}
-            </p>
-            <p>Réponse correcte : {correctAnswerText}</p>
-            <p>Score pour cette question : {isCorrect ? 5 : 0}</p>
-          </div>
-        );
-      })}
-      <p>Score total : {totalScore}</p>
+      <div>
+        <table style={{ width: "900px", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "center", width: "5%" }}>#</th>
+              <th style={{ textAlign: "center", width: "50%" }}>Question</th>
+              <th style={{ textAlign: "center", width: "17%" }}>Your Answer</th>
+              <th style={{ textAlign: "center", width: "17%" }}>
+                Correct Answer
+              </th>
+              <th style={{ textAlign: "center", width: "11%" }}>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {questions.map((question, index) => {
+              const userResponse = userResponses[index];
+              const selectedAnswerIndex = userResponse.selectedAnswerIndex;
+              const isCorrect = userResponse.isCorrect;
+              const correctAnswerIndex = question.options.findIndex(
+                (option) => option.isCorrect
+              );
+              const correctAnswerText =
+                question.options[correctAnswerIndex].text;
+              const score = isCorrect ? 5 : 0;
+
+              // Appliquer le style alternatif de ligne
+              const isEvenRow = index % 2 === 0;
+              const rowStyle = isEvenRow
+                ? { backgroundColor: "#f2f2f2" } // Ligne en gris clair
+                : { backgroundColor: "white" }; // Ligne en blanc
+
+              return (
+                <tr key={index} style={{ textAlign: "center", ...rowStyle }}>
+                  <td>{index + 1}</td>
+                  <td>{question.question}</td>
+                  <td>
+                    {selectedAnswerIndex !== null
+                      ? question.options[selectedAnswerIndex].text
+                      : "Vous n'avez pas répondu à cette question"}
+                  </td>
+                  <td>{correctAnswerText}</td>
+                  <td
+                    style={{
+                      color:
+                        score === 5 ? "green" : score === 0 ? "red" : "black",
+                    }}
+                  >
+                    {score}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div
+        style={{
+          marginBottom: "50px",
+          textAlign: "end",
+          marginTop: "30px",
+          color: "blue",
+        }}
+      >
+        <h4>Score total : {totalScore}</h4>
+      </div>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "30px" }}
+      >
+        <MDBBtn
+          href="/user-dashboard"
+          rounded
+          color="danger"
+          style={{
+            width: "230px",
+            marginRight: "30px",
+            fontSize: "16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Other Quiz
+          <MDBIcon fas icon="sign-out-alt" />
+        </MDBBtn>
+
+        <MDBBtn
+          onClick={toogleQuizRePlay}
+          rounded
+          color="info"
+          style={{
+            width: "230px",
+            fontSize: "16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Replay the Quiz
+          <MDBIcon fas icon="redo" />
+        </MDBBtn>
+      </div>
     </div>
   );
 };

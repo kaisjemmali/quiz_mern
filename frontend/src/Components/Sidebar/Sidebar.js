@@ -1,8 +1,6 @@
 /*******************************Fonctionnel****************************/
-
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./Sidebar.css";
-
 import {
   MDBIcon,
   MDBCollapse,
@@ -25,12 +23,20 @@ export default function App({
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const playQuizItemRef = useRef(null); // Référence à l'élément "Play Quiz"  *******
 
   const logoutHandler = (e) => {
     e.preventDefault();
     dispatch(Logout());
     navigate("/login");
   };
+
+  useEffect(() => {
+    // Simuler un clic sur "Play Quiz" au chargement de la page
+    if (playQuizItemRef.current) {
+      playQuizItemRef.current.click();
+    }
+  }, []);
 
   return (
     <>
@@ -141,8 +147,10 @@ export default function App({
                   tag="a"
                   href="#"
                   action
+                  active
                   className="border-0 border-bottom rounded"
                   onClick={toogleCategoryPlay} // Utilisation de la fonction toogleCategoryPlay
+                  ref={playQuizItemRef} // Ajouter la référence à l'élément "Play Quiz"
                 >
                   <MDBIcon fas icon="fas fa-gamepad me-3" />
                   Play Quiz
