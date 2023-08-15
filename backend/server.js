@@ -10,7 +10,12 @@ const quizQuestionRoutes = require("./routes/quizQuestionRoutes");
 const quizResultRoutes = require("./routes/quizResultRoutes");
 
 const app = express();
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "https://quizy-mern-app.onrender.com/"],
+  })
+);
 dotenv.config();
 connectDb();
 
