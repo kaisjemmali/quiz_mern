@@ -171,17 +171,7 @@ export default function App({
                 </MDBListGroupItem>
               </MDBRipple>
             ) : (
-              <MDBRipple rippleTag="span">
-                <MDBListGroupItem
-                  tag="a"
-                  href="#"
-                  action
-                  className="border-0 border-bottom rounded"
-                >
-                  <MDBIcon fas icon="fas fa-square-poll-horizontal me-3" />
-                  Show Results
-                </MDBListGroupItem>
-              </MDBRipple>
+              ""
             )}
 
             {userInfo.isAdmin ? (
@@ -191,6 +181,7 @@ export default function App({
                   href="#"
                   action
                   className="border-0 border-bottom rounded"
+                  ref={playQuizItemRef}
                   onClick={toggleUsers}
                 >
                   <MDBIcon fas icon="users me-3" />
@@ -219,5 +210,3 @@ export default function App({
     </>
   );
 }
-
-/**********************************Code à tester avec le container******************************/

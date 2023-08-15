@@ -22,6 +22,7 @@ import { Container } from "react-bootstrap";
 import { Outlet, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Header from "./Components/Header";
+import Footer from "./Components/Footer";
 
 function App() {
   const location = useLocation();
@@ -42,6 +43,7 @@ function App() {
       <Container className="my-2">
         <Outlet />
       </Container>
+      {!isDashboardPage() && <Footer />}
     </div>
   );
 }

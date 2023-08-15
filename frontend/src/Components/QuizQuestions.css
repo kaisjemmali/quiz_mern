@@ -1,0 +1,116 @@
+/* .quiz-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #f8f9fa;
+}
+
+.loading,
+.error {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.question-card {
+  width: 600px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+} */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #28a745;
+  --highlight-color: #fbc02d;
+  --text-color: #333;
+  --background-color: #f8f9fa;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.quiz-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--background-color);
+}
+
+.question-card {
+  width: 600px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.question-text {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.question-text h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #007bff;
+}
+
+.question-text p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.options {
+  padding: 20px;
+}
+
+.option-btn {
+  width: 100%;
+  margin-bottom: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.option-btn.selected {
+  background-color: #28a745 !important;
+  transform: scale(1.02);
+}
+
+.action {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #007bff;
+}
+
+.next-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: #007bff;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.next-btn.result {
+  background-color: #e0e0e0;
+}
+
+.next-btn:disabled {
+  background-color: #3d5573;
+  cursor: not-allowed;
+}

@@ -116,5 +116,3 @@ const PlayQuiz = () => {
 };
 
 export default PlayQuiz;
-
-/******************************Test pour le caontainer************************/

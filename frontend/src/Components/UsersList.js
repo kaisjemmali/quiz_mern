@@ -72,7 +72,11 @@ const UsersList = () => {
                 <div className="d-flex text-black">
                   <div className="flex-shrink-0">
                     <MDBCardImage
-                      style={{ width: "180px", borderRadius: "10px" }}
+                      style={{
+                        width: "130px",
+                        height: "130px",
+                        borderRadius: "10px",
+                      }}
                       src={user.image}
                       alt="User Profile"
                       fluid
@@ -83,26 +87,6 @@ const UsersList = () => {
                     <MDBCardText>{user.email}</MDBCardText>{" "}
                     {/* Ajouter l'e-mail de l'utilisateur */}
                     <MDBCardText>{user.role}</MDBCardText>
-                    <div
-                      className="d-flex justify-content-start rounded-3 p-2 mb-2"
-                      style={{ backgroundColor: "#efefef" }}
-                    >
-                      <div>
-                        <p className="small text-muted mb-1">Articles</p>
-                        {/* Ajouter le nombre d'articles de l'utilisateur */}
-                        <p className="mb-0">{user.articles}</p>
-                      </div>
-                      <div className="px-3">
-                        <p className="small text-muted mb-1">Followers</p>
-                        {/* Ajouter le nombre de followers de l'utilisateur */}
-                        <p className="mb-0">{user.followers}</p>
-                      </div>
-                      <div>
-                        <p className="small text-muted mb-1">Rating</p>
-                        {/* Ajouter la note de l'utilisateur */}
-                        <p className="mb-0">{user.rating}</p>
-                      </div>
-                    </div>
                     <div className="d-flex pt-1">
                       {/* Bouton pour bannir ou débannir l'utilisateur */}
                       <MDBBtn

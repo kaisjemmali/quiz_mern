@@ -6,8 +6,6 @@ import PlayQuiz from "../Components/PlayQuiz"; // Import the PlayQuiz Categories
 import ProfilePage from "./ProfilePage";
 import "./dashboard.css";
 
-// ... Other import statements ...
-
 const UserDashboard = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showCategoryPlay, setShowCategoryPlay] = useState(false);
